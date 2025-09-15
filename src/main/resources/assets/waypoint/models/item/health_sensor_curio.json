@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "waypoint:item/health_sensor_curio"
+  }
+}

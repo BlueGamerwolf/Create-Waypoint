@@ -1,0 +1,15 @@
+{
+  "type": "create:mixing",
+  "ingredients": [
+    { "item": "minecraft:red_dye" },
+    { "item": "minecraft:orange_dye" },
+    { "item": "minecraft:yellow_dye" },
+    { "item": "minecraft:green_dye" },
+    { "item": "minecraft:blue_dye" },
+    { "item": "minecraft:purple_dye" }
+  ],
+  "results": [
+    { "item": "waypoint:rainbow_dye", "count": 6 }
+  ],
+  "heatRequirement": "heated"
+}
