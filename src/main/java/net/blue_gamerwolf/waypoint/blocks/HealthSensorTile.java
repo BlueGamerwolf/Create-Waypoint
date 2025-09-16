@@ -2,7 +2,7 @@ package net.blue_gamerwolf.waypoint.blocks;
 
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
-import net.blue_gamerwolf.waypoint.items.HealthSensorCurio;
+import net.blue_gamerwolf.waypoint.items.HealthSensorItem;
 import net.blue_gamerwolf.waypoint.registry.ModTileEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -36,9 +36,9 @@ public class HealthSensorTile extends KineticBlockEntity {
 
         for (Player player : players) {
             boolean hasLinkedCurio = player.getInventory().items.stream()
-                    .filter(stack -> stack.getItem() instanceof HealthSensorCurio)
+                    .filter(stack -> stack.getItem() instanceof HealthSensorItem)
                     .anyMatch(stack -> {
-                        UUID linkedId = HealthSensorCurio.getLinkedPlayer(stack);
+                        UUID linkedId = HealthSensorItem.getLinkedPlayer(stack);
                         return linkedId != null && linkedId.equals(player.getUUID());
                     });
 

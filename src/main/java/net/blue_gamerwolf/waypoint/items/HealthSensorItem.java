@@ -4,26 +4,15 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import top.theillusivec4.curios.api.SlotContext;
-import top.theillusivec4.curios.api.type.capability.ICurio;
 
 import java.util.UUID;
 
-public class HealthSensorCurio extends Item implements ICurio {
+public class HealthSensorItem extends Item {
 
     private static final String TAG_LINKED_PLAYER = "LinkedPlayer";
 
-    public HealthSensorCurio(Properties properties) {
+    public HealthSensorItem(Properties properties) {
         super(properties);
-    }
-
-    public void curioTick(SlotContext slotContext, ItemStack stack) {
-        LivingEntity entity = slotContext.entity();
-        if (entity.level().isClientSide()) return;
-
-        if (isPlayerLowHP(entity, stack)) {
-            entity.teleportTo(entity.getX(), entity.getY() + 2, entity.getZ());
-        }
     }
 
     public static void linkToPlayer(ItemStack stack, UUID playerUUID) {
@@ -46,8 +35,12 @@ public class HealthSensorCurio extends Item implements ICurio {
         return entity.getHealth() <= (entity.getMaxHealth() / 4f);
     }
 
-    @Override
-    public ItemStack getStack() {
-        throw new UnsupportedOperationException("Unimplemented method 'getStack'");
+    // Server-side logic you can call anywhere
+    public void tick(LivingEntity entity, ItemStack stack) {
+        if (entity.level().isClientSide()) return;
+
+        if (isPlayerLowHP(entity, stack)) {
+            entity.teleportTo(entity.getX(), entity.getY() + 2, entity.getZ());
+        }
     }
 }
