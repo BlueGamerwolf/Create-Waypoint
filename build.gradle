@@ -12,45 +12,60 @@ def requiredProp = { key, fallback = null ->
 }
 
 repositories {
-    maven { url = "https://maven.createmod.net/" }
-    maven { url = "https://maven.ithundxr.dev/mirror" }
-    maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" }
-    maven { url = "https://maven.tterrag.dev/releases" }
-    maven { url = "https://maven.theillusivec4.top/" }
-    maven { url = "https://maven.minecraftforge.net/" }
+    repositories {
+    maven { url = "https://maven.createmod.net" } 
+    maven { url = "https://maven.ithundxr.dev/mirror" } 
+    maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } 
+    maven { url = "https://maven.tterrag.dev/releases" } 
+    maven { url = "https://maven.minecraftforge.net/" } 
+    maven { url = "https://maven.theillusivec4.top/"}
     mavenCentral()
+    }
 }
+
+
+def minecraft_version = requiredProp("minecraft_version")
+def forge_version = requiredProp("forge_version")
+def create_version = requiredProp("create_version")
+def ponder_version = requiredProp("ponder_version")
+def flywheel_version = requiredProp("flywheel_version")
+def registrate_version = requiredProp("registrate_version")
+def curios_version = requiredProp("curios_version")
+
+def modId = requiredProp("mod_id")
+def modName = requiredProp("mod_name")
+def modVersion = requiredProp("mod_version")
+def modGroupId = requiredProp("mod_group_id")
+def modAuthors = requiredProp("mod_authors")
+def modLicense = requiredProp("mod_license")
+def modDescription = requiredProp("mod_description")
+
+group = modGroupId
+version = modVersion
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-  
-    implementation fg.deobf("com.simibubi.create:create-${minecraft_version}:${create_version}")
-    implementation fg.deobf("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}")
-    compileOnly fg.deobf("dev.engine-room.flywheel:flywheel-forge-api-${minecraft_version}:${flywheel_version}")
-    runtimeOnly fg.deobf("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}")
-    implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
+    // Create + Ponder + Flywheel
+    implementation(fg.deobf("com.simibubi.create:create-${minecraft_version}:${create_version}:slim"))
+    implementation(fg.deobf("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}"))
+    compileOnly(fg.deobf("dev.engine-room.flywheel:flywheel-forge-api-${minecraft_version}:${flywheel_version}"))
+    runtimeOnly(fg.deobf("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}"))
+    implementation(fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}"))
+
+    // Curios
+    compileOnly "top.theillusivec4.curios:curios-forge:${curios_version}:api@jar"
+    runtimeOnly "top.theillusivec4.curios:curios-forge:${curios_version}@jar"
+    
+    // MixinExtras
     compileOnly annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1")
-    implementation "io.github.llamalad7:mixinextras-forge:0.4.1"
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api@jar")
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}@jar")
+    implementation("io.github.llamalad7:mixinextras-forge:0.4.1")
 }
 
-def modId          = requiredProp("mod_id", "waypoint")
-def modVersion     = requiredProp("mod_version", "1.0.0")
-def modGroupId     = requiredProp("mod_group_id", "net.blue.waypoint")
-def modName        = requiredProp("mod_name", "Waypoint")
-def modAuthors     = requiredProp("mod_authors", "Blue_Gamerwolf")
-def modLicense     = requiredProp("mod_license", "MIT")
-def modDescription = requiredProp("mod_description", "A standalone waypoint system for Minecraft.")
-
-project.version = modVersion
-group = modGroupId
-
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
-    mappings channel: "official", version: "1.20.1"
+    mappings channel: "official", version: minecraft_version
     copyIdeResources = true
 
     runs {
@@ -60,15 +75,16 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                "${modId}" {
-                    source sourceSets.main
-                }
+                "${modId}" { source sourceSets.main }
             }
         }
 
         client {
+            
+        jvmArgs += ["-Dmixin.hotSwap=false"]
             property 'forge.enabledGameTestNamespaces', modId
-            property 'mixin.env.remapRefMap', 'true'
+            property("mixin.env.remapRefMap", "true")
+            property("mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg")
         }
 
         server {
@@ -77,9 +93,7 @@ minecraft {
             property 'mixin.env.remapRefMap', 'true'
         }
 
-        gameTestServer {
-            property 'forge.enabledGameTestNamespaces', modId
-        }
+        gameTestServer { property 'forge.enabledGameTestNamespaces', modId }
 
         data {
             workingDirectory project.file('run-data')
@@ -127,9 +141,7 @@ tasks.named('jar', Jar).configure {
 
 publishing {
     publications {
-        register('mavenJava', MavenPublication) {
-            artifact jar
-        }
+        register('mavenJava', MavenPublication) { artifact jar }
     }
     repositories {
         maven { url "file://${project.projectDir}/mcmodsrepo" }

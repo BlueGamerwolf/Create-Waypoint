@@ -48,7 +48,6 @@ public class HealthSensorCurio extends Item implements ICurio {
 
     @Override
     public ItemStack getStack() {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getStack'");
     }
 }

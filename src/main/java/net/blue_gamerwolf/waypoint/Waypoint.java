@@ -25,6 +25,7 @@ public class Waypoint {
     public Waypoint() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
+
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::addCreative);
 
