@@ -47,18 +47,13 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    // Create + Ponder + Flywheel
     implementation(fg.deobf("com.simibubi.create:create-${minecraft_version}:${create_version}:slim"))
     implementation(fg.deobf("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}"))
     compileOnly(fg.deobf("dev.engine-room.flywheel:flywheel-forge-api-${minecraft_version}:${flywheel_version}"))
     runtimeOnly(fg.deobf("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}"))
     implementation(fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}"))
-
-    // Curios
-    compileOnly "top.theillusivec4.curios:curios-forge:${curios_version}:api@jar"
-    runtimeOnly "top.theillusivec4.curios:curios-forge:${curios_version}@jar"
-    
-    // MixinExtras
+    compileOnly "top.theillusivec4.curios:curios-forge:${curios_version}:api"
+    runtimeOnly "top.theillusivec4.curios:curios-forge:${curios_version}"
     compileOnly annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1")
     implementation("io.github.llamalad7:mixinextras-forge:0.4.1")
 }
@@ -80,8 +75,7 @@ minecraft {
         }
 
         client {
-            
-        jvmArgs += ["-Dmixin.hotSwap=false"]
+        
             property 'forge.enabledGameTestNamespaces', modId
             property("mixin.env.remapRefMap", "true")
             property("mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg")
