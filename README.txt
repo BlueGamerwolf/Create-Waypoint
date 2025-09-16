@@ -1,46 +1,66 @@
+Create-Waypoint Mod
+===================
 
-Source installation information for modders
--------------------------------------------
-This code follows the Minecraft Forge installation methodology. It will apply
-some small patches to the vanilla MCP source code, giving you and it access 
-to some of the data and functions you need to build a successful mod.
+Version: 1.0
+Minecraft Version: 1.20.1
+Forge Version: 47.4.0
+Author: BlueGamerwolf
+License: MIT
 
-Note also that the patches are built against "un-renamed" MCP source code (aka
-SRG Names) - this means that you will not be able to read them directly against
-normal code.
+Description:
+------------
+Create-Waypoint is a Minecraft Forge mod that adds advanced waypoint blocks to the game. 
+These blocks allow players to mark locations, teleport, and manage waypoints efficiently, with features designed for both solo and team play.
 
-Setup Process:
-==============================
+Features:
+---------
+1. Tiered Waypoint System:
+   - Basic Waypoints: Standard markers for locations.
+   - Advanced Waypoints: Include chunk loading, visual customization, and fuel requirements.
 
-Step 1: Open your command-line and browse to the folder where you extracted the zip file.
+2. Team Integration:
+   - Share waypoints with your team for easier coordination.
+   - Protect your waypoints from other players.
 
-Step 2: You're left with a choice.
-If you prefer to use Eclipse:
-1. Run the following command: `./gradlew genEclipseRuns`
-2. Open Eclipse, Import > Existing Gradle Project > Select Folder 
-   or run `gradlew eclipse` to generate the project.
+3. Visual Customization:
+   - Customize the appearance of your waypoints.
+   - Easily distinguish between different waypoints and tiers.
 
-If you prefer to use IntelliJ:
-1. Open IDEA, and import project.
-2. Select your build.gradle file and have it import.
-3. Run the following command: `./gradlew genIntellijRuns`
-4. Refresh the Gradle Project in IDEA if required.
+4. Fuel System:
+   - Some advanced waypoints require fuel to function.
+   - Balances gameplay and prevents abuse of teleportation.
 
-If at any point you are missing libraries in your IDE, or you've run into problems you can 
-run `gradlew --refresh-dependencies` to refresh the local cache. `gradlew clean` to reset everything 
-(this does not affect your code) and then start the process again.
+5. Crafting System:
+   - Waypoints are craftable with resources in the game.
+   - Advanced tiers require special crafting recipes.
 
-Mapping Names:
-=============================
-By default, the MDK is configured to use the official mapping names from Mojang for methods and fields 
-in the Minecraft codebase. These names are covered by a specific license. All modders should be aware of this
-license, if you do not agree with it you can change your mapping names to other crowdsourced names in your 
-build.gradle. For the latest license text, refer to the mapping file itself, or the reference copy here:
-https://github.com/MinecraftForge/MCPConfig/blob/master/Mojang.md
+6. Safe and Efficient:
+   - Designed to minimize performance impact on large worlds.
+   - Includes safeguards for overuse or misplacement.
 
-Additional Resources: 
-=========================
-Community Documentation: https://docs.minecraftforge.net/en/1.20.1/gettingstarted/
-LexManos' Install Video: https://youtu.be/8VEdtQLuLO0
-Forge Forums: https://forums.minecraftforge.net/
-Forge Discord: https://discord.minecraftforge.net/
+Installation:
+-------------
+1. Ensure you have Minecraft Forge 47.4.0 installed for Minecraft 1.20.1.
+2. Place the Create-Waypoint mod `.jar` file in your `mods` folder.
+3. Launch Minecraft with the Forge profile.
+
+Usage:
+------
+- Place a waypoint block to mark a location.
+- Right-click to interact with the waypoint (upgrade, teleport, customize, etc.).
+- Advanced features like chunk loading and team sharing require fuel or permissions.
+
+Support:
+--------
+- For bugs or feature requests, visit: https://github.com/BlueGamerwolf/Create-Waypoint
+- Join the community discussions to share ideas or get help.
+
+Credits:
+--------
+- Created by BlueGamerwolf
+- Powered by Forge and Minecraft 1.20.1
+- Inspired by the Create mod for integrated machinery and automation.
+
+Changelog:
+----------
+v1.0 - Initial release with basic and advanced waypoint blocks, crafting, fuel system, and team integration.
