@@ -7,8 +7,7 @@
       "command": "./gradlew prepareRunClientCompile",
       "options": {
         "cwd": "${workspaceFolder}"
-      },
-      "problemMatcher": []
+      }
     },
     {
       "label": "prepareRunDataCompile",

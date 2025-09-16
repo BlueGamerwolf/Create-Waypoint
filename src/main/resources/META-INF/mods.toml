@@ -35,6 +35,6 @@ side="BOTH"
 [[dependencies.waypoint]]
 modId="curios"
 mandatory=true
-versionRange="[5.14.1,)"
+versionRange="[5.10.0,)"
 ordering="AFTER"
 side="BOTH"
