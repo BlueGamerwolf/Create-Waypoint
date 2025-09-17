@@ -1,80 +1,107 @@
 package net.blue_gamerwolf.waypoint.blocks;
 
-import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
-import net.blue_gamerwolf.waypoint.items.HealthSensorItem;
-import net.blue_gamerwolf.waypoint.registry.ModTileEntities;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidAction;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-public class HealthSensorTile extends KineticBlockEntity {
+public class HealthSensorTile extends BlockEntity {
 
-    private static final float REQUIRED_SU = 64f;
-    private static final int COOLDOWN_TICKS = 100;
-    private final Map<UUID, Integer> cooldownMap = new HashMap<>();
+    private static final int MAX_LAVA = 10000; // 10,000 mB
+
+    private final FluidTank tank = new FluidTank(MAX_LAVA) {
+        @Override
+        protected void onContentsChanged() {
+            setChanged(); // mark tile dirty so it saves
+        }
+
+        public boolean canFillFluidType(FluidStack stack) {
+            // Only lava
+            return stack.getFluid().getRegistryName().toString().equals("minecraft:lava");
+        }
+    };
+
+    private final LazyOptional<IFluidHandler> fluidHandler = LazyOptional.of(() -> new IFluidHandler() {
+
+        @Override
+        public int getTanks() {
+            return 1;
+        }
+
+        @Nonnull
+        @Override
+        public FluidStack getFluidInTank(int tankIndex) {
+            return tank.getFluid();
+        }
+
+        @Override
+        public int getTankCapacity(int tankIndex) {
+            return tank.getCapacity();
+        }
+
+        @Override
+        public boolean isFluidValid(int tankIndex, @Nonnull FluidStack stack) {
+            return tank.canFillFluidType(stack);
+        }
+
+        @Override
+        public int fill(FluidStack resource, FluidAction action) {
+            if (resource.isEmpty()) return 0;
+
+            // Only allow filling from bottom
+            if (getBlockPos().above().equals(BlockPos.ZERO)) return 0; // dummy, see note below
+
+            return tank.fill(resource, action);
+        }
+
+        @Nonnull
+        @Override
+        public FluidStack drain(FluidStack resource, FluidAction action) {
+            return tank.drain(resource, action);
+        }
+
+        @Nonnull
+        @Override
+        public FluidStack drain(int maxDrain, FluidAction action) {
+            return tank.drain(maxDrain, action);
+        }
+    });
 
     public HealthSensorTile(BlockPos pos, BlockState state) {
-        super(ModTileEntities.HEALTH_SENSOR_TILE.get(), pos, state);
+        super(WaypointBlocks.HEALTH_SENSOR_TILE.get(), pos, state);
     }
 
-    /** Called every tick by Create */
+    @Nonnull
     @Override
-    public void tick() {
-        super.tick();
-        // nothing else needed here; powered is based on speed
-    }
-
-    /** Returns true if the block is mechanically powered */
-    public boolean isPowered() {
-        return getSpeed() != 0; // non-zero speed = powered
-    }
-
-    public static void tick(Level level, BlockPos pos, BlockState state, HealthSensorTile tile) {
-        if (level.isClientSide) return;
-        if (!(level instanceof ServerLevel serverLevel)) return;
-        if (serverLevel.getGameTime() % 20 != 0) return; // every second
-
-        List<Player> players = level.getEntitiesOfClass(Player.class,
-                tile.getRenderBoundingBox().inflate(1, 2, 1));
-
-        for (Player player : players) {
-            boolean hasLinkedCurio = player.getInventory().items.stream()
-                    .filter(stack -> stack.getItem() instanceof HealthSensorItem)
-                    .anyMatch(stack -> {
-                        UUID linkedId = HealthSensorItem.getLinkedPlayer(stack);
-                        return linkedId != null && linkedId.equals(player.getUUID());
-                    });
-
-            if (!hasLinkedCurio) continue;
-
-            Integer cooldown = tile.cooldownMap.getOrDefault(player.getUUID(), 0);
-            if (cooldown > 0) {
-                tile.cooldownMap.put(player.getUUID(), cooldown - 20);
-                continue;
-            }
-
-            if (player.getHealth() <= player.getMaxHealth() / 4f) {
-                double x = pos.getX() + 0.5;
-                double y = pos.getY() + 1.1;
-                double z = pos.getZ() + 0.5;
-                player.teleportTo(x, y, z);
-                tile.cooldownMap.put(player.getUUID(), COOLDOWN_TICKS);
-            }
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable net.minecraft.core.Direction side) {
+        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+            // Only allow access from bottom
+            if (side == net.minecraft.core.Direction.DOWN) return fluidHandler.cast();
+            return LazyOptional.empty();
         }
+        return super.getCapability(cap, side);
     }
 
-    public float calculateStressApplied() {
-        return REQUIRED_SU;
+    public void onRemove() {
+        super.onRemove();
+        tank.drain(tank.getFluidAmount(), FluidAction.EXECUTE);
+        fluidHandler.invalidate();
     }
 
-    public boolean hasStressImpact() {
-        return true;
+    public boolean hasEnoughFuel() {
+        return tank.getFluidAmount() > 0;
+    }
+
+    public int getFuelAmount() {
+        return tank.getFluidAmount();
     }
 }
