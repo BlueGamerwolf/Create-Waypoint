@@ -37,4 +37,12 @@ public class WaypointBlocks {
         BLOCKS.register(eventBus);
         ITEMS.register(eventBus);
     }
+
+    // === Heart Block ===
+    public static final RegistryObject<Block> HEART_BLOCK =
+        BLOCKS.register("heart", () -> new Block(Block.Properties.of()
+                .strength(0.5f)
+                .noOcclusion()
+        )
+    );
 }

@@ -20,23 +20,20 @@ public class HealthSensorTile extends KineticBlockEntity {
     private static final int COOLDOWN_TICKS = 100;
     private final Map<UUID, Integer> cooldownMap = new HashMap<>();
 
-    // Track if the block is powered by Create
-    private boolean powered;
-
     public HealthSensorTile(BlockPos pos, BlockState state) {
         super(ModTileEntities.HEALTH_SENSOR_TILE.get(), pos, state);
-        this.powered = false;
     }
 
+    /** Called every tick by Create */
     @Override
     public void tick() {
         super.tick();
-        // Update powered state based on kinetic stress
-        powered = calculateStressApplied() > 0 && hasStressImpact();
+        // nothing else needed here; powered is based on speed
     }
 
+    /** Returns true if the block is mechanically powered */
     public boolean isPowered() {
-        return powered;
+        return getSpeed() != 0; // non-zero speed = powered
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, HealthSensorTile tile) {
