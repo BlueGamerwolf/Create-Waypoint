@@ -5,6 +5,7 @@ import net.blue_gamerwolf.waypoint.items.Heart;
 import net.blue_gamerwolf.waypoint.items.RainbowDyeItem;
 import net.blue_gamerwolf.waypoint.items.Knife;
 import net.blue_gamerwolf.waypoint.items.HealthSensorItem;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -26,8 +27,10 @@ public class WaypointItems {
     public static final RegistryObject<Item> KNIFE = ITEMS.register("knife",
             () -> new Knife(new Item.Properties().stacksTo(1)));
 
-    public static final RegistryObject<Item> HEALTH_SENSOR = ITEMS.register("health_sensor",
-            () -> new HealthSensorItem(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> HEALTH_SENSOR_ITEM =
+        ITEMS.register("health_sensor", () ->
+                new BlockItem(WaypointBlocks.HEALTH_SENSOR_BLOCK.get(),
+                        new Item.Properties()));
 
     public static void register(IEventBus bus) {
         ITEMS.register(bus);

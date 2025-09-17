@@ -21,8 +21,9 @@ public class WaypointBlocks {
             DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
 
     // === Health Sensor Block ===
-    public static final RegistryObject<Block> HEALTH_SENSOR =
-            registerBlock("health_sensor", HealthSensorBlock::new);
+    public static final RegistryObject<Block> HEALTH_SENSOR_BLOCK =
+        BLOCKS.register("health_sensor", HealthSensorBlock::new);
+
 
     // Helper method for Block + BlockItem registration
     private static <T extends Block> RegistryObject<T> registerBlock(String name, java.util.function.Supplier<T> blockSupplier) {

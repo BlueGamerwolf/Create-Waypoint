@@ -17,7 +17,7 @@ public class ModTileEntities {
             BLOCK_ENTITIES.register("health_sensor_tile",
                     () -> BlockEntityType.Builder.of(
                             HealthSensorTile::new,
-                            WaypointBlocks.HEALTH_SENSOR.get() // reference your block here
+                            WaypointBlocks.HEALTH_SENSOR_BLOCK.get() // reference your block here
                     ).build(null));
 
     public static void register(IEventBus bus) {
