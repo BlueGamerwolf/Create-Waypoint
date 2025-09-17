@@ -5,13 +5,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.Fluids;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -23,9 +24,10 @@ public class HealthSensorTile extends BlockEntity {
     public HealthSensorTile(BlockPos pos, BlockState state) {
         super(WaypointBlocks.HEALTH_SENSOR_TILE.get(), pos, state);
 
+        // 10,000mb lava tank
         this.tank = new FluidTank(10_000) {
             @Override
-            public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+            public boolean isFluidValid(@Nonnull FluidStack stack) {
                 return stack.getFluid().isSame(Fluids.LAVA);
             }
 
