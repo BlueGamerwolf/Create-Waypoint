@@ -13,13 +13,11 @@ public class ModTileEntities {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
             DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, Waypoint.MOD_ID);
 
-    public static final RegistryObject<BlockEntityType<HealthSensorTile>> HEALTH_SENSOR_TILE =
-            BLOCK_ENTITIES.register("health_sensor_tile",
-                    () -> BlockEntityType.Builder.of(
-                            HealthSensorTile::new,
-                            WaypointBlocks.HEALTH_SENSOR_BLOCK.get()
-                    ).build(null) // pass null, works in 1.20.1 Forge
-            );
+    // In WaypointBlocks.java
+public static final RegistryObject<BlockEntityType<HealthSensorTile>> HEALTH_SENSOR_TILE =
+    BLOCK_ENTITIES.register("health_sensor_tile",
+        () -> BlockEntityType.Builder.of(HealthSensorTile::new, HEALTH_SENSOR_BLOCK.get()).build(null));
+
 
     public static void register(IEventBus bus) {
         BLOCK_ENTITIES.register(bus);

@@ -45,4 +45,6 @@ public class WaypointBlocks {
                 .noOcclusion()
         )
     );
+
+    
 }

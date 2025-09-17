@@ -1,107 +1,64 @@
 package net.blue_gamerwolf.waypoint.blocks;
 
+import net.blue_gamerwolf.waypoint.registry.WaypointBlocks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidAction;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class HealthSensorTile extends BlockEntity {
 
-    private static final int MAX_LAVA = 10000; // 10,000 mB
-
-    private final FluidTank tank = new FluidTank(MAX_LAVA) {
-        @Override
-        protected void onContentsChanged() {
-            setChanged(); // mark tile dirty so it saves
-        }
-
-        public boolean canFillFluidType(FluidStack stack) {
-            // Only lava
-            return stack.getFluid().getRegistryName().toString().equals("minecraft:lava");
-        }
-    };
-
-    private final LazyOptional<IFluidHandler> fluidHandler = LazyOptional.of(() -> new IFluidHandler() {
-
-        @Override
-        public int getTanks() {
-            return 1;
-        }
-
-        @Nonnull
-        @Override
-        public FluidStack getFluidInTank(int tankIndex) {
-            return tank.getFluid();
-        }
-
-        @Override
-        public int getTankCapacity(int tankIndex) {
-            return tank.getCapacity();
-        }
-
-        @Override
-        public boolean isFluidValid(int tankIndex, @Nonnull FluidStack stack) {
-            return tank.canFillFluidType(stack);
-        }
-
-        @Override
-        public int fill(FluidStack resource, FluidAction action) {
-            if (resource.isEmpty()) return 0;
-
-            // Only allow filling from bottom
-            if (getBlockPos().above().equals(BlockPos.ZERO)) return 0; // dummy, see note below
-
-            return tank.fill(resource, action);
-        }
-
-        @Nonnull
-        @Override
-        public FluidStack drain(FluidStack resource, FluidAction action) {
-            return tank.drain(resource, action);
-        }
-
-        @Nonnull
-        @Override
-        public FluidStack drain(int maxDrain, FluidAction action) {
-            return tank.drain(maxDrain, action);
-        }
-    });
+    private final FluidTank tank;
+    private final LazyOptional<IFluidHandler> fluidHandler;
 
     public HealthSensorTile(BlockPos pos, BlockState state) {
         super(WaypointBlocks.HEALTH_SENSOR_TILE.get(), pos, state);
+
+        // 10,000mb lava tank
+        this.tank = new FluidTank(10_000) {
+            @Override
+            public boolean isFluidValid(FluidStack stack) {
+                // Only accept lava
+                return stack.getFluid().getFluidType().isSame(FluidType.LAVA);
+            }
+
+            @Override
+            protected void onContentsChanged() {
+                setChanged();
+            }
+        };
+
+        this.fluidHandler = LazyOptional.of(() -> tank);
     }
 
+    /** Expose capability only on bottom side */
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable net.minecraft.core.Direction side) {
-        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            // Only allow access from bottom
-            if (side == net.minecraft.core.Direction.DOWN) return fluidHandler.cast();
-            return LazyOptional.empty();
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side == Direction.DOWN) {
+            return fluidHandler.cast();
         }
-        return super.getCapability(cap, side);
+        return super.getCapability(capability, side);
     }
 
-    public void onRemove() {
-        super.onRemove();
-        tank.drain(tank.getFluidAmount(), FluidAction.EXECUTE);
+    /** Clear tank and invalidate capability when block is removed */
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
         fluidHandler.invalidate();
+        tank.drain(tank.getCapacity(), IFluidHandler.FluidAction.EXECUTE);
     }
 
-    public boolean hasEnoughFuel() {
-        return tank.getFluidAmount() > 0;
-    }
-
-    public int getFuelAmount() {
-        return tank.getFluidAmount();
+    /** Utility method to check if powered (tank has lava) */
+    public boolean isPowered() {
+        return !tank.isEmpty();
     }
 }
