@@ -8,9 +8,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fluids.Fluids;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -22,12 +23,10 @@ public class HealthSensorTile extends BlockEntity {
     public HealthSensorTile(BlockPos pos, BlockState state) {
         super(WaypointBlocks.HEALTH_SENSOR_TILE.get(), pos, state);
 
-        // 10,000mb lava tank
         this.tank = new FluidTank(10_000) {
             @Override
-            public boolean isFluidValid(FluidStack stack) {
-                // Only accept lava
-                return stack.getFluid().getFluidType().isSame(FluidType.LAVA);
+            public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+                return stack.getFluid().isSame(Fluids.LAVA);
             }
 
             @Override
@@ -39,25 +38,22 @@ public class HealthSensorTile extends BlockEntity {
         this.fluidHandler = LazyOptional.of(() -> tank);
     }
 
-    /** Expose capability only on bottom side */
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side == Direction.DOWN) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        if (cap == ForgeCapabilities.FLUID_HANDLER && side == Direction.DOWN) {
             return fluidHandler.cast();
         }
-        return super.getCapability(capability, side);
+        return super.getCapability(cap, side);
     }
 
-    /** Clear tank and invalidate capability when block is removed */
     @Override
     public void setRemoved() {
         super.setRemoved();
-        fluidHandler.invalidate();
         tank.drain(tank.getCapacity(), IFluidHandler.FluidAction.EXECUTE);
+        fluidHandler.invalidate();
     }
 
-    /** Utility method to check if powered (tank has lava) */
     public boolean isPowered() {
         return !tank.isEmpty();
     }

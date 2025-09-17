@@ -46,5 +46,7 @@ public class WaypointBlocks {
         )
     );
 
+    public static final String HEALTH_SENSOR_TILE = null;
+
     
 }
