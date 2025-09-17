@@ -21,20 +21,39 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class HealthSensorBlock extends RotatedPillarKineticBlock implements IRotate {
 
+    private static final VoxelShape SHAPE;
+
+    static {
+        VoxelShape shape = Shapes.empty();
+
+        // Base plate
+        shape = Shapes.or(shape, Block.box(1, 0, 1, 15, 7, 15));
+
+        // Arms
+        shape = Shapes.or(shape, Block.box(0, 0, 0, 1, 14, 16));    // West
+        shape = Shapes.or(shape, Block.box(15, 0, 0, 16, 14, 16));  // East
+        shape = Shapes.or(shape, Block.box(0, 0, 0, 16, 14, 1));    // North
+        shape = Shapes.or(shape, Block.box(0, 0, 15, 16, 14, 16));  // South
+
+        // Heart spike
+        shape = Shapes.or(shape, Block.box(4, 16, 7, 12, 26, 9));
+
+        SHAPE = shape;
+    }
+
     public HealthSensorBlock() {
         super(BlockBehaviour.Properties.of()
                 .mapColor(net.minecraft.world.level.material.MapColor.METAL)
                 .strength(3f)
-                .noOcclusion());
+                .noOcclusion()
+        );
     }
 
-    // Rotation axis is the same as a shaft’s axis
     @Override
     public Axis getRotationAxis(BlockState state) {
         return state.getValue(AXIS);
     }
 
-    // Allow shafts to connect along the axis only
     @Override
     public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
         return face.getAxis() == getRotationAxis(state);
@@ -52,36 +71,6 @@ public class HealthSensorBlock extends RotatedPillarKineticBlock implements IRot
                     }
                 }
                 : null;
-    }
-
-    // ---- Shape ----
-    private static final VoxelShape SHAPE;
-    static {
-        VoxelShape shape = Shapes.empty();
-
-        // Base plate
-        shape = Shapes.or(shape, Block.box(1, 0, 1, 15, 7, 15));
-
-        // Arms
-        shape = Shapes.or(shape, Block.box(0, 0, 0, 16, 14, 1));   // north
-        shape = Shapes.or(shape, Block.box(0, 0, 15, 16, 14, 16)); // south
-        shape = Shapes.or(shape, Block.box(0, 0, 0, 1, 14, 16));   // west
-        shape = Shapes.or(shape, Block.box(15, 0, 0, 16, 14, 16)); // east
-
-        // Heart spike
-        shape = Shapes.or(shape, Block.box(7, 16, 7, 9, 18, 9));
-        shape = Shapes.or(shape, Block.box(6, 18, 7, 8, 20, 9));
-        shape = Shapes.or(shape, Block.box(8, 18, 7, 10, 20, 9));
-        shape = Shapes.or(shape, Block.box(5, 20, 7, 7, 22, 9));
-        shape = Shapes.or(shape, Block.box(9, 20, 7, 11, 22, 9));
-        shape = Shapes.or(shape, Block.box(7, 20, 7, 9, 22, 9));
-        shape = Shapes.or(shape, Block.box(6, 22, 7, 8, 24, 9));
-        shape = Shapes.or(shape, Block.box(8, 22, 7, 10, 24, 9));
-        shape = Shapes.or(shape, Block.box(4, 22, 7, 6, 24, 9));
-        shape = Shapes.or(shape, Block.box(5, 24, 7, 7, 26, 9));
-        shape = Shapes.or(shape, Block.box(9, 24, 7, 11, 26, 9));
-
-        SHAPE = shape;
     }
 
     @Override

@@ -1,20 +1,20 @@
 package net.blue_gamerwolf.waypoint.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.simibubi.create.foundation.block.render.SafeBlockEntityRenderer;
-import com.simibubi.create.foundation.block.render.SuperByteBufferCache;
-import com.simibubi.create.foundation.utility.VecHelper;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.blue_gamerwolf.waypoint.blocks.HealthSensorTile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 
-public class HealthSensorBlockEntityRenderer extends SafeBlockEntityRenderer<HealthSensorTile> {
+public class HealthSensorBlockEntityRenderer implements BlockEntityRenderer<HealthSensorTile> {
 
     private final BlockRenderDispatcher blockRenderer;
 
@@ -22,27 +22,29 @@ public class HealthSensorBlockEntityRenderer extends SafeBlockEntityRenderer<Hea
         this.blockRenderer = Minecraft.getInstance().getBlockRenderer();
     }
 
-    
-    protected void renderSafe(@Nonnull HealthSensorTile tile, float partialTicks, @Nonnull PoseStack matrixStack,
-                              @Nonnull MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
+    @Override
+    public void render(@Nonnull HealthSensorTile tile, float partialTicks, @Nonnull PoseStack matrixStack,
+                       @Nonnull MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
 
         BlockState state = tile.getBlockState();
+        var model = blockRenderer.getBlockModel(state);
+        VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.solid());
 
         matrixStack.pushPose();
-        matrixStack.translate(0.5, 0, 0.5); // center the block
+        // Center the block
+        matrixStack.translate(0.5, 0.0, 0.5);
 
-        // Render the main block
-        blockRenderer.renderSingleBlock(state, matrixStack, buffer, combinedLight, OverlayTexture.NO_OVERLAY);
-
-        // Render a kinetic shaft at the bottom
-        renderKineticShaft(matrixStack, buffer, combinedLight, combinedOverlay);
+        // Correct call to renderModel
+        blockRenderer.getModelRenderer().renderModel(
+                matrixStack.last(), // PoseStack.Pose
+                vertexConsumer,
+                state,
+                model,
+                1f, 1f, 1f,      // red, green, blue (full color)
+                combinedLight,
+                OverlayTexture.NO_OVERLAY
+        );
 
         matrixStack.popPose();
-    }
-
-    private void renderKineticShaft(PoseStack ms, MultiBufferSource buffer, int light, int overlay) {
-        // A simple way is to render the Create shaft block model
-        BlockState shaft = net.minecraft.world.level.block.Blocks.OAK_LOG.defaultBlockState(); // replace with Create shaft if available
-        blockRenderer.renderSingleBlock(shaft, ms, buffer, light, overlay);
     }
 }

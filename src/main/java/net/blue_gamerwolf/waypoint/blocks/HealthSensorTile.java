@@ -1,12 +1,12 @@
 package net.blue_gamerwolf.waypoint.blocks;
 
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import net.blue_gamerwolf.waypoint.items.HealthSensorItem;
 import net.blue_gamerwolf.waypoint.registry.ModTileEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.HashMap;
@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class HealthSensorTile extends BlockEntity {
+public class HealthSensorTile extends KineticBlockEntity {
 
-    private static final float REQUIRED_SU = 64f; // for any stress logic if needed
+    private static final float REQUIRED_SU = 64f;
     private static final int COOLDOWN_TICKS = 100;
     private final Map<UUID, Integer> cooldownMap = new HashMap<>();
 
@@ -25,9 +25,8 @@ public class HealthSensorTile extends BlockEntity {
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, HealthSensorTile tile) {
-        if (level.isClientSide) return; // only server-side
+        if (level.isClientSide) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
-
         if (serverLevel.getGameTime() % 20 != 0) return; // every second
 
         List<Player> players = level.getEntitiesOfClass(Player.class,
