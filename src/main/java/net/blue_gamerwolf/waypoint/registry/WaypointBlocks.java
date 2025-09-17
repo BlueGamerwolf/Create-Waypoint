@@ -1,8 +1,6 @@
 package net.blue_gamerwolf.waypoint.registry;
 
 import net.blue_gamerwolf.waypoint.Waypoint;
-import net.blue_gamerwolf.waypoint.blocks.HealthSensorBlock;
-import net.blue_gamerwolf.waypoint.blocks.HealthSensorTile;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -26,14 +24,6 @@ public class WaypointBlocks {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
             DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MOD_ID);
 
-    // === Health Sensor Block ===
-    public static final RegistryObject<Block> HEALTH_SENSOR_BLOCK =
-            BLOCKS.register("health_sensor", HealthSensorBlock::new);
-
-    // === Health Sensor Tile Entity ===
-    public static final RegistryObject<BlockEntityType<HealthSensorTile>> HEALTH_SENSOR_TILE =
-            BLOCK_ENTITIES.register("health_sensor_tile",
-                    () -> BlockEntityType.Builder.of(HealthSensorTile::new, HEALTH_SENSOR_BLOCK.get()).build(null));
 
     // Helper method for Block + BlockItem registration
     private static <T extends Block> RegistryObject<T> registerBlock(String name, java.util.function.Supplier<T> blockSupplier) {
