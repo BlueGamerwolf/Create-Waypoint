@@ -27,23 +27,19 @@ public class HealthSensorBlockEntityRenderer implements BlockEntityRenderer<Heal
                        @Nonnull MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
 
         BlockState state = tile.getBlockState();
-        var model = blockRenderer.getBlockModel(state);
         VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.solid());
 
         matrixStack.pushPose();
-        // Center the block
-        matrixStack.translate(0.5, 0.0, 0.5);
+        matrixStack.translate(0.5, 0.0, 0.5); // center block
 
-        // Correct call to renderModel
-        blockRenderer.getModelRenderer().renderModel(
-                matrixStack.last(), // PoseStack.Pose
-                vertexConsumer,
-                state,
-                model,
-                1f, 1f, 1f,      // red, green, blue (full color)
-                combinedLight,
-                OverlayTexture.NO_OVERLAY
-        );
+        // Render the base block normally
+        blockRenderer.renderSingleBlock(state, matrixStack, buffer, combinedLight, combinedOverlay);
+
+        // Render the heart only if powered
+        if (tile.isPowered()) {
+            BlockState heartState = state; // use a separate block state if you made a "heart-only" model
+            blockRenderer.renderSingleBlock(heartState, matrixStack, buffer, combinedLight, combinedOverlay);
+        }
 
         matrixStack.popPose();
     }
