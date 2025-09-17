@@ -29,10 +29,10 @@ public class HealthSensorTile extends KineticBlockEntity {
         if (level.isClientSide) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
         if (serverLevel.getGameTime() % 20 != 0) return; // every second
-        if (tile.getSpeed() == 0) return; // no rotation, no power
+        if (tile.getSpeed() == 0) return; // not powered or overstressed
 
         List<Player> players = level.getEntitiesOfClass(Player.class,
-                tile.getRenderBoundingBox().inflate(1, 2, 1)); // slightly bigger radius
+                tile.getRenderBoundingBox().inflate(1, 2, 1));
 
         for (Player player : players) {
             boolean hasLinkedCurio = player.getInventory().items.stream()
@@ -51,14 +51,11 @@ public class HealthSensorTile extends KineticBlockEntity {
             }
 
             if (player.getHealth() <= player.getMaxHealth() / 4f) {
-                // Only teleport if enough SU is available
-                if (tile.getSpeed() > 0) { // placeholder for SU check
-                    double x = pos.getX() + 0.5;
-                    double y = pos.getY() + 1.1;
-                    double z = pos.getZ() + 0.5;
-                    player.teleportTo(x, y, z);
-                    tile.cooldownMap.put(player.getUUID(), COOLDOWN_TICKS);
-                }
+                double x = pos.getX() + 0.5;
+                double y = pos.getY() + 1.1;
+                double z = pos.getZ() + 0.5;
+                player.teleportTo(x, y, z);
+                tile.cooldownMap.put(player.getUUID(), COOLDOWN_TICKS);
             }
         }
     }
@@ -66,6 +63,10 @@ public class HealthSensorTile extends KineticBlockEntity {
     @Override
     public float calculateStressApplied() {
         return REQUIRED_SU;
+    }
+
+    public boolean hasStressImpact() {
+        return true;
     }
 
     @Override
