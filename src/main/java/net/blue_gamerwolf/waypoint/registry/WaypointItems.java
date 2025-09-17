@@ -17,7 +17,6 @@ public class WaypointItems {
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(ForgeRegistries.ITEMS, Waypoint.MOD_ID);
 
-    // === Base Items ===
     public static final RegistryObject<Item> RAINBOW_DYE = ITEMS.register("rainbow_dye",
             () -> new RainbowDyeItem(new Item.Properties().stacksTo(64)));
 
@@ -35,7 +34,7 @@ public class WaypointItems {
 
         // Optional Curios version
         if (ModList.get().isLoaded("curios")) {
-            ITEMS.register("health_sensor_curio",
+            ITEMS.register("health_sensor_item",
                     () -> new HealthSensorItem(new Item.Properties().stacksTo(1)));
         }
     }

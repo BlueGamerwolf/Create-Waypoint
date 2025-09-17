@@ -16,11 +16,10 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
-@Mod(Waypoint.MODID)
+@Mod(Waypoint.MOD_ID)
 public class Waypoint {
-    public static final String MODID = "waypoint";
+    public static final String MOD_ID = "waypoint";
     private static final Logger LOGGER = LogUtils.getLogger();
-    public static final String MOD_ID = null;
 
     public Waypoint() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -51,7 +50,7 @@ public class Waypoint {
         LOGGER.info("HELLO from server starting");
     }
 
-    @Mod.EventBusSubscriber(modid = Waypoint.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+    @Mod.EventBusSubscriber(modid = Waypoint.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onRegisterItemColors(net.minecraftforge.client.event.RegisterColorHandlersEvent.Item event) {
