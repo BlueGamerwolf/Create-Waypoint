@@ -1,66 +1,74 @@
-Create-Waypoint Mod
-===================
+# Waypoint Block Mod
 
-Version: 1.0
-Minecraft Version: 1.20.1
-Forge Version: 47.4.0
-Author: BlueGamerwolf
-License: MIT
+A Forge mod for Minecraft 1.20.1 that adds a tiered **Waypoint Block** system with full RGB customization, team integration, and optional chunk loading.
 
-Description:
-------------
-Create-Waypoint is a Minecraft Forge mod that adds advanced waypoint blocks to the game. 
-These blocks allow players to mark locations, teleport, and manage waypoints efficiently, with features designed for both solo and team play.
+---
 
-Features:
----------
-1. Tiered Waypoint System:
-   - Basic Waypoints: Standard markers for locations.
-   - Advanced Waypoints: Include chunk loading, visual customization, and fuel requirements.
+## 📌 Tier System
 
-2. Team Integration:
-   - Share waypoints with your team for easier coordination.
-   - Protect your waypoints from other players.
+### Tier 1 – Basic Waypoint Block
+- **Crafting**: Mid-game (Iron + Redstone + Glass)
+- **Functions**:
+  - Right-click to unlock waypoint
+  - Floating text, beacon beam, distance counter
+  - GUI: rename, recolor, toggle visibility
+  - Full **RGB color customization**
+- **Limitations**:
+  - ❌ No chunk loading
+  - Render distance capped (~1000 blocks)
+  - Configurable per-player limit (default **10**)
 
-3. Visual Customization:
-   - Customize the appearance of your waypoints.
-   - Easily distinguish between different waypoints and tiers.
+---
 
-4. Fuel System:
-   - Some advanced waypoints require fuel to function.
-   - Balances gameplay and prevents abuse of teleportation.
+### Tier 2 – Advanced Waypoint Block
+- **Crafting**: Late-game (Netherite + Ender Eye + Block of Diamond + Basic Block)
+- **Functions**:
+  - All **Tier 1 features**
+  - Infinite render distance
+  - Toggleable **chunk loading**
+  - **Fuel System**: Lava only (bucket/manual or via pipes/tanks)
+  - Fuel consumption: `1 bucket = ~30 min` (scales with chunk radius)
+  - Configurable chunk radius (**default 1, max 3×3**)
+- **GUI**:
+  - Name, RGB color picker, beam toggle
+  - Fuel bar + runtime timer
+  - Chunk loading toggle + radius selector
+- **Visuals**:
+  - Lava drip particles when active
+  - Core glows brighter as tank fills
+  - Smoke particles when empty
 
-5. Crafting System:
-   - Waypoints are craftable with resources in the game.
-   - Advanced tiers require special crafting recipes.
+---
 
-6. Safe and Efficient:
-   - Designed to minimize performance impact on large worlds.
-   - Includes safeguards for overuse or misplacement.
+## 🎨 Waypoint Features
 
-Installation:
--------------
-1. Ensure you have Minecraft Forge 47.4.0 installed for Minecraft 1.20.1.
-2. Place the Create-Waypoint mod `.jar` file in your `mods` folder.
-3. Launch Minecraft with the Forge profile.
+### Visuals
+- Floating text, beam, and distance counter
+- Beam color matches **full RGB picker**
+- Real-time updates while adjusting colors
+- Optional pulsing outline / transparency
 
-Usage:
-------
-- Place a waypoint block to mark a location.
-- Right-click to interact with the waypoint (upgrade, teleport, customize, etc.).
-- Advanced features like chunk loading and team sharing require fuel or permissions.
+### Customization
+- Rename waypoints
+- Recolor with RGB picker
+- Toggle visibility: floating text, beam, distance
 
-Support:
---------
-- For bugs or feature requests, visit: https://github.com/BlueGamerwolf/Create-Waypoint
-- Join the community discussions to share ideas or get help.
+---
 
-Credits:
---------
-- Created by BlueGamerwolf
-- Powered by Forge and Minecraft 1.20.1
-- Inspired by the Create mod for integrated machinery and automation.
+## 🤝 Sharing System
 
-Changelog:
-----------
-v1.0 - Initial release with basic and advanced waypoint blocks, crafting, fuel system, and team integration.
+- **Export/Import**: Waypoint JSON (coords, name, RGB, block UUID)
+- **Chat Commands**:
+  - `/waypoint share <player>` → sends clickable message
+  - Recipient must have discovered the block to add it
+
+---
+
+## 👥 FTB Teams Integration
+
+### Team Leader Rules
+- Only **leader** can unlock team waypoints
+- Leader edits (rename, color, chunk loading) → sends prompts to members
+
+### Team Members
+- Chat notification when leader discovers a waypoint:
