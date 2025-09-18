@@ -2,10 +2,10 @@
 	"format_version": "1.9.0",
 	"credit": "Made with Blockbench",
 	"textures": {
-		"1": "OneDrive/Desktop/coding/base",
-		"2": "OneDrive/Desktop/coding/center",
-		"4": "OneDrive/Desktop/coding/stand",
-		"particle": "OneDrive/Desktop/coding/ad_stand"
+		"1": "waypoint:block/base",
+		"2": "waypoint:block/center",
+		"4": "waypoint:block/stand",
+		"particle": "waypoint:block/ad_stand"
 	},
 	"elements": [
 		{
