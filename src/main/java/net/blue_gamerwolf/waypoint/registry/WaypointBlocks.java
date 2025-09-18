@@ -20,9 +20,7 @@ public class WaypointBlocks {
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
 
-    // BlockEntity registry
-    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
-            DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MOD_ID);
+
 
 
     // Helper method for Block + BlockItem registration
@@ -30,12 +28,5 @@ public class WaypointBlocks {
         RegistryObject<T> block = BLOCKS.register(name, blockSupplier);
         ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
         return block;
-    }
-
-    // Register with the mod event bus
-    public static void register(IEventBus eventBus) {
-        BLOCKS.register(eventBus);
-        ITEMS.register(eventBus);
-        BLOCK_ENTITIES.register(eventBus);
     }
 }

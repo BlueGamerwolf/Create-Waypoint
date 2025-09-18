@@ -3,6 +3,7 @@ package net.blue_gamerwolf.waypoint;
 import com.mojang.logging.LogUtils;
 import net.blue_gamerwolf.waypoint.registry.WaypointBlocks;
 import net.blue_gamerwolf.waypoint.registry.WaypointItems;
+import net.blue_gamerwolf.waypoint.registry.ModBlockEntities;
 import net.blue_gamerwolf.waypoint.registry.ModTileEntities;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
@@ -31,6 +32,7 @@ public class Waypoint {
         WaypointBlocks.BLOCKS.register(modEventBus);
         WaypointItems.ITEMS.register(modEventBus);
         ModTileEntities.register(modEventBus);
+        ModBlockEntities.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
     }

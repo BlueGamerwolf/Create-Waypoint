@@ -1,4 +1,4 @@
-package net.blue_gamerwolf.waypoint.blocks.BlockEntities;
+package net.blue_gamerwolf.waypoint.blocks.blockentities;
 
 public class AdvancedWaypointBlockEntity {
     
